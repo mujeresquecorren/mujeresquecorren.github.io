@@ -4,3 +4,5 @@ stories/barbazul/
 tools/
 # Local Claude Code settings
 .claude/
+# Notes for Claude Code (kept local, not published)
+CLAUDE.md
