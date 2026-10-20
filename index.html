@@ -1,0 +1,449 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mujeres que Corren con los Lobos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@400;500&display=swap">
+<style>
+/* Layout: a quiet table, one open book in the middle (ink drawing left, verse right), a small cassette-like player under it. */
+:root {
+  --table: #e9ecef;        /* surface the book rests on: cool, like the watercolor wash */
+  --table-ink: #3a4350;    /* text on the table */
+  --table-mute: #7b8592;
+  --paper: #f7f6f2;        /* book page, close to the drawings' paper */
+  --paper-edge: #e6e3db;
+  --ink: #23272e;          /* verse */
+  --ink-soft: #6c7280;
+  --wash: #9fbfd9;         /* the blue watercolor */
+  --wash-deep: #5f88ab;
+  --shadow: rgba(36, 48, 66, .18);
+  --display: "Cormorant Garamond", "EB Garamond", Garamond, "Times New Roman", serif;
+  --utility: "Jost", "Futura", "Avenir Next", "Helvetica Neue", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --table: #15191f; --table-ink: #dde3ea; --table-mute: #8691a0;
+    --shadow: rgba(0, 0, 0, .55); --wash-deep: #9fbfd9; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --table: #15191f; --table-ink: #dde3ea; --table-mute: #8691a0;
+  --shadow: rgba(0, 0, 0, .55); --wash-deep: #9fbfd9; color-scheme: dark;
+}
+
+html, body { height: 100%; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+body {
+  background: var(--table);
+  color: var(--table-ink);
+  font-family: var(--utility);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--wash-deep); outline-offset: 3px; border-radius: 4px; }
+
+.eyebrow {
+  font-family: var(--utility); font-size: .72rem; font-weight: 500;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--table-mute);
+}
+
+/* ---------- Library ---------- */
+#library { max-width: 1180px; margin: 0 auto; padding-block: clamp(40px, 8vh, 96px) 64px; }
+.lib-head { display: grid; gap: 10px; margin-bottom: clamp(32px, 6vh, 64px); }
+.lib-head h1 {
+  font-family: var(--display); font-weight: 400; font-style: italic;
+  font-size: clamp(2.6rem, 6vw, 4.2rem); line-height: 1; margin: 0; letter-spacing: -.01em;
+  text-wrap: balance;
+}
+.lib-head .author { font-family: var(--display); font-size: clamp(1.15rem, 2.2vw, 1.45rem); color: var(--table-ink); letter-spacing: .01em; margin-top: 4px; }
+.lib-head p { margin: 0; color: var(--table-mute); font-size: .95rem; max-width: 60ch; line-height: 1.6; text-wrap: balance; }
+
+.shelf {
+  display: grid; gap: clamp(16px, 2.4vw, 28px);
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  list-style: none; margin: 0; padding: 0;
+}
+@media (min-width: 1000px) { .shelf { grid-template-columns: repeat(7, 1fr); } }
+.volume { display: grid; gap: 12px; text-align: left; padding: 0; width: 100%; align-content: start; }
+.volume .cover {
+  aspect-ratio: 3 / 4.3; max-width: 100%;
+  background: var(--paper); border-radius: 2px 6px 6px 2px;
+  box-shadow: inset 6px 0 0 var(--paper-edge), 0 1px 2px var(--shadow), 0 14px 30px -18px var(--shadow);
+  overflow: hidden; position: relative;
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s;
+}
+.volume .cover img { width: 100%; height: 100%; object-fit: cover; object-position: top; mix-blend-mode: multiply; filter: brightness(1.035) contrast(1.04); }
+/* "framed" cover: the drawing hangs small in the middle, like a painting on a wall. */
+.volume .cover.-framed { display: grid; place-items: center; }
+.volume .cover.-framed img { width: 66%; height: auto; object-fit: contain; }
+.volume:not([disabled]):hover .cover { transform: translateY(-4px) rotate(-.6deg); box-shadow: inset 6px 0 0 var(--paper-edge), 0 2px 4px var(--shadow), 0 24px 40px -20px var(--shadow); }
+.volume .num { font-family: var(--display); font-style: italic; font-size: 1rem; color: var(--table-mute); }
+.volume .name { font-family: var(--display); font-size: 1.35rem; line-height: 1.1; }
+.volume .meta { display: grid; gap: 2px; }
+.volume[disabled] { cursor: default; }
+.volume[disabled] .cover {
+  background: transparent; box-shadow: none;
+  border: 1px dashed color-mix(in srgb, var(--table-mute) 45%, transparent);
+  display: grid; place-items: center;
+}
+.volume[disabled] .cover span { font-family: var(--display); font-style: italic; font-size: 2rem; color: var(--table-mute); opacity: .6; }
+.volume[disabled] .name { color: var(--table-mute); }
+.volume .soon { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--table-mute); opacity: .75; margin-top: 2px; }
+
+/* ---------- Reader ---------- */
+#reader { height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding-block: 18px 6px; max-width: 1180px; width: 100%; margin: 0 auto;
+}
+.back { display: inline-flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--table-mute); padding: 6px 0; }
+.back:hover { color: var(--table-ink); }
+.topbar .story-name { font-family: var(--display); font-style: italic; font-size: 1.15rem; }
+.counter { font-size: .78rem; color: var(--table-mute); font-variant-numeric: tabular-nums; letter-spacing: .06em; min-width: 5ch; text-align: right; }
+
+.stage { position: relative; display: grid; place-items: center; min-height: 0; padding-block: 8px; overflow: hidden; }
+.book-wrap { width: 100%; max-width: 1180px; height: 100%; display: grid; place-items: center; min-height: 0; }
+#bookBox { max-width: 100%; }
+#book .page { box-shadow: 0 18px 32px -14px var(--shadow); }
+
+.nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+  color: var(--table-mute); transition: color .2s, background .2s, opacity .2s;
+}
+.nav:hover { color: var(--table-ink); background: color-mix(in srgb, var(--table-ink) 6%, transparent); }
+.nav[disabled] { opacity: 0; pointer-events: none; }
+.nav.prev { left: 0; } .nav.next { right: 0; }
+@media (max-width: 760px) { .nav { display: none; } }
+
+/* Pages */
+.page { background: var(--paper); color: var(--ink); overflow: hidden; container-type: size; }
+.page-inner { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 8cqh 9cqw; }
+.page.-left .page-inner { box-shadow: inset -18px 0 22px -18px rgba(40,40,40,.18); }
+.page.-right .page-inner { box-shadow: inset 18px 0 22px -18px rgba(40,40,40,.18); }
+
+.p-art .page-inner { padding: 6cqh 6cqw; justify-content: center; align-items: center; }
+.p-art img { max-width: 100%; max-height: 100%; object-fit: contain; mix-blend-mode: multiply; filter: brightness(1.035) contrast(1.04); user-select: none; -webkit-user-drag: none; }
+
+.p-verse .page-inner { justify-content: center; }
+.p-verse .mark {
+  font-family: var(--display); font-style: italic; font-size: clamp(14px, 5.2cqw, 30px);
+  color: var(--wash-deep); margin-bottom: 4cqh;
+}
+.p-verse .verse {
+  font-family: var(--display); font-size: clamp(12px, 4.15cqw, 22px); line-height: 1.5;
+  white-space: pre-line; margin: 0; text-wrap: pretty;
+}
+.p-verse.-long .verse { font-size: clamp(11px, 3.55cqw, 19px); line-height: 1.45; }
+.p-verse.-longer .verse { font-size: clamp(10px, 3.15cqw, 17px); line-height: 1.42; }
+.p-verse.-long .verse span, .p-verse.-longer .verse span { margin-bottom: .25em; }
+.p-verse .verse span { display: block; padding-left: 1.2em; text-indent: -1.2em; }
+.folio {
+  position: absolute; bottom: 4.5cqh; left: 0; right: 0; text-align: center;
+  font-family: var(--display); font-style: italic; font-size: clamp(10px, 3cqw, 15px); color: var(--ink-soft);
+}
+
+.p-cover { background: var(--paper); }
+.p-cover .page-inner { justify-content: space-between; align-items: flex-start; padding: 10cqh 10cqw; }
+.p-cover .eyebrow { color: var(--ink-soft); font-size: clamp(9px, 2.4cqw, 12px); }
+.p-cover h2 {
+  font-family: var(--display); font-weight: 400; font-style: italic;
+  font-size: clamp(30px, 13cqw, 76px); line-height: .95; margin: 2cqh 0 0; letter-spacing: -.015em; text-wrap: balance;
+}
+.p-cover .sub { font-family: var(--display); font-style: italic; font-size: clamp(13px, 4.6cqw, 23px); line-height: 1.35; color: var(--ink-soft); margin-top: 3cqh; max-width: 30ch; text-wrap: balance; }
+.p-cover .wash {
+  position: absolute; width: 70cqw; height: 50cqw; right: -12cqw; top: 34cqh;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--wash) 55%, transparent), transparent);
+  filter: blur(4px); border-radius: 50%; pointer-events: none;
+}
+.p-cover .start {
+  display: inline-flex; align-items: center; gap: 12px; position: relative;
+  font-size: clamp(11px, 3cqw, 14px); letter-spacing: .14em; text-transform: uppercase; font-weight: 500; color: var(--ink);
+  padding: 12px 20px 12px 14px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+  transition: background .2s, border-color .2s;
+}
+/* StPageFlip ignores clicks only when the target itself is a <button>; keep children from becoming the target, or the page turns twice. */
+.page button * { pointer-events: none; }
+.p-cover .start:hover { background: color-mix(in srgb, var(--wash) 30%, transparent); border-color: var(--wash-deep); }
+.p-cover .start i {
+  width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--paper);
+  display: grid; place-items: center; font-style: normal;
+}
+.p-cover .hint { font-size: clamp(9px, 2.4cqw, 12px); color: var(--ink-soft); letter-spacing: .04em; }
+
+.p-end .page-inner { justify-content: center; align-items: center; text-align: center; gap: 3cqh; }
+/* Closing page: printed ornament (ink extracted from a photo into stories/ornament-v2.png, then perspective-straightened) framing "Fin". */
+.p-end::before {
+  content: ""; position: absolute; inset: 6cqh 7cqw; pointer-events: none;
+  background: url("stories/ornament-v2.png") center / 100% 100% no-repeat; opacity: .85;
+}
+.p-end .fin { font-family: var(--display); font-style: italic; font-size: clamp(26px, 11cqw, 60px); }
+.p-end .again { font-size: clamp(10px, 2.8cqw, 13px); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); padding: 8px 12px; }
+.p-end .again:hover { color: var(--ink); }
+
+/* Player */
+.player {
+  justify-self: center; display: flex; align-items: center; gap: 14px;
+  margin-block: 6px 18px; padding: 8px 18px 8px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--table-ink) 5%, transparent);
+  width: min(420px, 100%);
+}
+.play {
+  width: 38px; height: 38px; flex: none; border-radius: 50%; display: grid; place-items: center;
+  background: var(--table-ink); color: var(--table);
+}
+.track { flex: 1; min-width: 0; display: grid; gap: 6px; }
+.track-row { display: flex; justify-content: space-between; gap: 10px; font-size: .74rem; color: var(--table-mute); }
+.track-row b { font-weight: 500; color: var(--table-ink); letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track-row span { font-variant-numeric: tabular-nums; }
+.bar { height: 3px; border-radius: 3px; background: color-mix(in srgb, var(--table-ink) 14%, transparent); position: relative; cursor: pointer; }
+.bar::before { content: ""; position: absolute; inset: -8px 0; }
+.bar i { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 3px; background: var(--wash-deep); }
+.player.playing .bar i { transition: width .25s linear; }
+
+@media (prefers-reduced-motion: reduce) {
+  .volume .cover, .player .bar i { transition: none !important; }
+}
+</style>
+
+<main id="library">
+  <header class="lib-head">
+    <span class="eyebrow">Cuentos en música</span>
+    <h1>Mujeres que Corren con los Lobos</h1>
+    <p>Siete cuentos musicales basados en el libro de Clarissa Pinkola Estés</p>
+    <span class="author">Violeta Marazuela</span>
+  </header>
+  <ol class="shelf" id="shelf"></ol>
+</main>
+
+<section id="reader" hidden>
+  <div class="topbar">
+    <button class="back" id="back" type="button" aria-label="Volver a las historias">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Historias
+    </button>
+    <span class="story-name" id="storyName"></span>
+    <span class="counter" id="counter"></span>
+  </div>
+  <div class="stage">
+    <button class="nav prev" id="prev" type="button" aria-label="Página anterior">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M13.5 5 7.5 11l6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="book-wrap" id="bookWrap"></div>
+    <button class="nav next" id="next" type="button" aria-label="Página siguiente">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="m8.5 5 6 6-6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="player" id="player">
+    <button class="play" id="play" type="button" aria-label="Reproducir música"></button>
+    <div class="track">
+      <div class="track-row"><b id="trackName"></b><span id="time">0:00</span></div>
+      <div class="bar" id="bar" role="slider" aria-label="Posición de la música" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="fill"></i></div>
+    </div>
+  </div>
+  <audio id="audio" preload="metadata"></audio>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+<script src="stories.js"></script>
+<script>
+(() => {
+  const STORIES = window.STORIES || [];
+  const ROMAN = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
+  const $ = id => document.getElementById(id);
+  const ICON_PLAY = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 2.2v9.6L11.5 7z" fill="currentColor"/></svg>';
+  const ICON_PAUSE = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 2.5h2.4v9H3.5zM8.1 2.5h2.4v9H8.1z" fill="currentColor"/></svg>';
+  const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  /* ---------- Library ---------- */
+  const shelf = $("shelf");
+  // Shelf shows only titles; the subtitle (what the story is about) appears on the book's own cover.
+  STORIES.forEach((s, i) => {
+    const ready = s.pages && s.pages.length;
+    const li = document.createElement("li");
+    li.innerHTML = ready
+      ? `<button class="volume" type="button" data-id="${s.id}">
+           <div class="cover${s.cover === "framed" ? " -framed" : ""}"><img src="${s.coverImg || s.pages[0].img}" alt=""></div>
+           <div class="meta"><span class="num">${ROMAN[i]}</span><span class="name">${esc(s.title)}</span></div>
+         </button>`
+      : `<button class="volume" type="button" disabled>
+           <div class="cover"><span>${ROMAN[i]}</span></div>
+           <div class="meta"><span class="num">${ROMAN[i]}</span><span class="name">${esc(s.title)}</span><span class="soon">Próximamente</span></div>
+         </button>`;
+    shelf.appendChild(li);
+  });
+  shelf.addEventListener("click", e => {
+    const b = e.target.closest(".volume[data-id]");
+    if (b) location.hash = b.dataset.id;
+  });
+
+  /* ---------- Audio ---------- */
+  const audio = $("audio"), player = $("player"), playBtn = $("play"), fill = $("fill"), bar = $("bar"), time = $("time");
+  let fadeTimer = null;
+  const fmt = t => isFinite(t) ? `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}` : "0:00";
+  function setPlayIcon() {
+    const on = !audio.paused;
+    playBtn.innerHTML = on ? ICON_PAUSE : ICON_PLAY;
+    playBtn.setAttribute("aria-label", on ? "Pausar música" : "Reproducir música");
+    player.classList.toggle("playing", on);
+    document.querySelectorAll(".start i").forEach(i => i.innerHTML = playBtn.innerHTML);
+  }
+  function fadeTo(target, ms, done) {
+    clearInterval(fadeTimer);
+    const from = audio.volume, steps = Math.max(1, Math.round(ms / 40)); let n = 0;
+    fadeTimer = setInterval(() => {
+      n++; audio.volume = Math.min(1, Math.max(0, from + (target - from) * (n / steps)));
+      if (n >= steps) { clearInterval(fadeTimer); done && done(); }
+    }, 40);
+  }
+  function play() {
+    audio.volume = 0;
+    const p = audio.play();
+    if (p && p.catch) p.catch(() => setPlayIcon());
+    fadeTo(1, 1200);
+  }
+  function pause(ms = 500) { fadeTo(0, ms, () => audio.pause()); }
+  function toggle() { audio.paused ? play() : pause(); }
+  playBtn.addEventListener("click", toggle);
+  ["play", "pause", "ended"].forEach(ev => audio.addEventListener(ev, setPlayIcon));
+  audio.addEventListener("timeupdate", () => {
+    const pct = audio.duration ? audio.currentTime / audio.duration * 100 : 0;
+    fill.style.width = pct + "%";
+    bar.setAttribute("aria-valuenow", Math.round(pct));
+    time.textContent = audio.paused && !audio.currentTime ? fmt(audio.duration) : fmt(audio.currentTime);
+  });
+  audio.addEventListener("loadedmetadata", () => { if (!audio.currentTime) time.textContent = fmt(audio.duration); });
+  function seek(clientX) {
+    const r = bar.getBoundingClientRect();
+    if (audio.duration) audio.currentTime = Math.min(1, Math.max(0, (clientX - r.left) / r.width)) * audio.duration;
+  }
+  bar.addEventListener("click", e => seek(e.clientX));
+  bar.addEventListener("keydown", e => {
+    if (!audio.duration) return;
+    if (e.key === "ArrowRight") { audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); e.preventDefault(); e.stopPropagation(); }
+    if (e.key === "ArrowLeft") { audio.currentTime = Math.max(0, audio.currentTime - 5); e.preventDefault(); e.stopPropagation(); }
+  });
+
+  /* ---------- Book ---------- */
+  let flip = null, story = null;
+  const bookWrap = $("bookWrap"), counter = $("counter"), prev = $("prev"), next = $("next");
+
+  function pageHTML(s, idx) {
+    const pages = [];
+    pages.push(`<div class="page p-cover" data-density="hard"><div class="page-inner">
+      <div><div class="eyebrow">Cuento ${ROMAN[idx]} · Violeta Marazuela</div>
+      <h2>${esc(s.title)}</h2>${s.subtitle ? `<div class="sub">${esc(s.subtitle)}</div>` : ""}</div>
+      <div class="wash"></div>
+      <div style="display:grid;gap:14px;position:relative">
+        <button class="start" type="button"><i>${ICON_PLAY}</i>Escuchar y leer</button>
+        <span class="hint">Pasa la página con un clic, deslizando o con ← →</span>
+      </div></div></div>`);
+    s.pages.forEach((p, i) => {
+      const lines = p.text.trim().split("\n").map(l => `<span>${esc(l.trim())}</span>`).join("");
+      pages.push(`<div class="page p-art"><div class="page-inner"><img src="${p.img}" alt="Ilustración ${i + 1} de ${esc(s.title)}" draggable="false"></div><div class="folio">${i * 2 + 1}</div></div>`);
+      // Longer prose gets a smaller size so it fits the page (pages are hidden while built, so size by length, not by measuring).
+      const len = p.text.length, lineCount = p.text.trim().split("\n").length;
+      const size = len > 650 || lineCount > 18 ? " -longer" : len > 420 || lineCount > 14 ? " -long" : "";
+      pages.push(`<div class="page p-verse${size}"><div class="page-inner"><p class="verse">${lines}</p></div><div class="folio">${i * 2 + 2}</div></div>`);
+    });
+    pages.push(`<div class="page p-end" data-density="hard"><div class="page-inner">
+      <div class="fin">Fin</div>
+      <button class="again" type="button" data-act="restart">Volver al principio</button>
+      <button class="again" type="button" data-act="library">Otras historias</button></div></div>`);
+    return pages.join("");
+  }
+
+  function updateNav() {
+    if (!flip) return;
+    const i = flip.getCurrentPageIndex(), n = flip.getPageCount();
+    const portrait = flip.getOrientation() === "portrait";
+    prev.disabled = i <= 0;
+    next.disabled = i >= n - 1;
+    let label;
+    if (i === 0) label = "";
+    else if (i >= n - 1) label = "Fin";
+    else if (portrait) label = `${i} / ${n - 2}`;
+    else { const a = i % 2 ? i : i - 1; label = `${a}–${a + 1} / ${n - 2}`; }
+    counter.textContent = label;
+  }
+
+  function openStory(id) {
+    const idx = STORIES.findIndex(s => s.id === id && s.pages && s.pages.length);
+    if (idx < 0) return showLibrary();
+    story = STORIES[idx];
+    $("library").hidden = true; $("reader").hidden = false;
+    $("storyName").textContent = story.title;
+    $("trackName").textContent = story.title;
+    document.title = `${story.title} · Mujeres que Corren con los Lobos`;
+    if (!audio.src.endsWith(story.audio)) { audio.src = story.audio; audio.load(); }
+    setPlayIcon();
+
+    if (flip) { flip.destroy(); flip = null; }
+    bookWrap.innerHTML = `<div id="bookBox"><div id="book">${pageHTML(story, idx)}</div></div>`;
+    const book = $("book");
+    fitBook();
+    flip = new St.PageFlip(book, {
+      width: 520, height: 720, size: "stretch",
+      minWidth: 200, maxWidth: 560, minHeight: 277, maxHeight: 776,
+      showCover: true, usePortrait: true, maxShadowOpacity: .35,
+      drawShadow: true, flippingTime: 900, mobileScrollSupport: false, autoSize: true
+    });
+    flip.loadFromHTML(book.querySelectorAll(".page"));
+    flip.on("flip", updateNav);
+    flip.on("changeOrientation", updateNav);
+    flip.on("init", updateNav);
+    updateNav();
+
+    book.addEventListener("click", e => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      e.stopPropagation();
+      if (b.classList.contains("start")) { if (audio.paused) play(); flip.flipNext(); }
+      else if (b.dataset.act === "restart") flip.flip(0);
+      else if (b.dataset.act === "library") location.hash = "";
+    }, true);
+  }
+
+  // Keep the book inside the stage height so the player stays on screen.
+  function fitBook() {
+    const box = $("bookBox"); if (!box) return;
+    const portrait = window.innerWidth < 760;
+    const ratio = 520 / 720;
+    const used = document.querySelector(".topbar").offsetHeight + player.offsetHeight + 40;
+    const availH = Math.max(280, window.innerHeight - used);
+    const availW = bookWrap.clientWidth - (portrait ? 0 : 112);
+    const pageW = Math.min(portrait ? availW : availW / 2, availH * ratio, 560);
+    box.style.width = Math.floor(portrait ? pageW : pageW * 2) + "px";
+  }
+  window.addEventListener("resize", () => { fitBook(); flip && flip.update(); });
+
+  function showLibrary() {
+    if (flip) { flip.destroy(); flip = null; }
+    bookWrap.innerHTML = "";
+    if (!audio.paused) pause(600);
+    $("reader").hidden = true; $("library").hidden = false;
+    document.title = "Mujeres que Corren con los Lobos";
+  }
+
+  prev.addEventListener("click", () => flip && flip.flipPrev());
+  next.addEventListener("click", () => flip && flip.flipNext());
+  $("back").addEventListener("click", () => { location.hash = ""; });
+  document.addEventListener("keydown", e => {
+    if (!flip || $("reader").hidden) return;
+    if (e.key === "ArrowRight") flip.flipNext();
+    if (e.key === "ArrowLeft") flip.flipPrev();
+    if (e.key === " " && e.target === document.body) { e.preventDefault(); toggle(); }
+  });
+
+  function route() {
+    const id = location.hash.replace(/^#/, "");
+    id ? openStory(id) : showLibrary();
+  }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>

@@ -1,0 +1,6 @@
+.DS_Store
+# Not used by the site
+stories/barbazul/
+tools/
+# Local Claude Code settings
+.claude/
